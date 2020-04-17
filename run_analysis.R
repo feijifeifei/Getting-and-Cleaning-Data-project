@@ -22,7 +22,9 @@ feature.name<- as.character(feature[,2])
 varname<- vector(length = length(feature.name)+2) 
 varname[1:2]<- c("subject", "activity")
 varname[3:(length(feature.name)+2)]<- feature.name
-names(df)<- varname
+varname<- sub(varname, pattern = "\\()", replacement = "")
+varname<- sub(varname, pattern = "-", replacement = "\\.")
+colnames(df)<- varname
 
 #extract mean and standard deviation of each measurements
 feature<- read.table("G:/Course/R/Clean_data/getdata_projectfiles_UCI HAR Dataset/UCI HAR Dataset/features.txt")
@@ -33,6 +35,4 @@ dfmeanstd<- df[, c(1, 2, meanstdcols+2)]
 library(dplyr)
 subject.activity.group<- group_by(dfmeanstd, subject, activity)
 summary<- summarise_each(subject.activity.group, mean)
-View(summary)
-
-
+write.table(summary, "output.txt", row.names = FALSE)
